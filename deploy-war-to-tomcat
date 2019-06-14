@@ -8,6 +8,17 @@ node{
       sh 'mvn compile'
       //sh "${mvnHome}/bin/mvn package"
    }
+   
+     stage('Build the Package') {
+        // sh "${mvnCli} package -Dmaven.test.skip=true"
+      sh 'mvn package'
+   }
+   
+ 
+      stage('Archive Artifacts'){
+        archiveArtifacts artifacts: '**/*.war', onlyIfSuccessful: true
+      }
+
    stage('Deploy to Tomcat'){
      sshagent(['CREDENTIAL_ID']) {
      sh 'ssh -o StrictHostKeyChecking=no target/*.war ec2-user@172.31.7.148:/opt/tomcat/webapps/'
